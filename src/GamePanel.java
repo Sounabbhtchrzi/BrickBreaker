@@ -69,7 +69,8 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
             g.setColor(Color.GREEN);
             level++;
             SoundManager.playLevelComplete();
-            g.drawString("Level " + (level-1) + " Completed! Press Enter for Next Level", getWidth()/3, getHeight()/2);
+            if(level == 5) g.drawString(" Congratulations u have completed the game! Press Esc to exit", getWidth()/3, getHeight()/2);
+            else g.drawString("Level " + (level-1) + " Completed! Press Enter for Next Level", getWidth()/3, getHeight()/2);
 
         }
 
