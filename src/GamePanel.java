@@ -18,7 +18,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
     private Paddle paddle;
     private Ball ball;
     private Brick brick;
-
+    private int lives=3;
     private HighScoreManager highScoreManager = new HighScoreManager();
 
     public GamePanel() {
@@ -37,6 +37,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
         ball = new Ball(310, 650, 20, 0, 1,1+((level-1)*0.25));
         int rows=5+(level-1)*2;
         int cols=23;
+        lives=3;
         brick = new Brick(rows, cols, 60, 20);
         totalBricks=2*(rows+cols)-4 + (rows-2)*(cols/2 - 1);
     }
@@ -62,6 +63,14 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
         g.drawString("Score: " + score, 1350, 30);
         g.drawString("Level: " + level, 50, 30);
 
+        g.setColor(Color.RED);
+        g.setFont(new Font("Arial", Font.BOLD, 20));
+        int heartX = 150;
+        for (int i = 0; i < lives; i++) {
+            g.drawString("♥", heartX, 30);
+            heartX += 25;
+        }
+
         // Check win condition
         if (totalBricks <= 0) {
             play = false;
@@ -76,13 +85,19 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 
         // Check game over condition
         if (ball.getY() > getHeight()) {
-            play = false;
-            ball.setDirection(0, 0);
-            g.setColor(Color.RED);
-            g.setFont(new Font("Arial", Font.BOLD, 30));
-            highScoreManager.addScore(score);
-            SoundManager.playGameOver();
-            g.drawString("Game Over! Press Enter to Restart", getWidth() / 3, getHeight() / 2);
+            lives--;
+            if(lives==0){
+                play = false;
+                ball.setDirection(0, 0);
+                g.setColor(Color.RED);
+                g.setFont(new Font("Arial", Font.BOLD, 30));
+                highScoreManager.addScore(score);
+                SoundManager.playGameOver();
+                g.drawString("Game Over! Press Enter to Restart", getWidth() / 3, getHeight() / 2);
+            }
+            else{
+                ball = new Ball(310, 650, 20, 0, 1,1+((level-1)*0.25));
+            }
         }
 
         g.dispose();
@@ -152,6 +167,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
     private void resetGame() {
         score = 0;
         level = 1;
+        lives=3;
         loadLevel(level);
         ball.reset();
     }
